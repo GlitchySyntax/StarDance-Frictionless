@@ -1,0 +1,8 @@
+{
+  "name": "StarDance-Frictionless",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A quick quality-of-life content ingestion pipeline.",
+  "main": "main.js",
+  "dependencies": {}
+}
