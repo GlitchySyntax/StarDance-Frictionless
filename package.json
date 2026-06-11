@@ -1,5 +1,5 @@
 {
-  "name": "StarDance-Frictionless",
+  "name": "content-pipeline",
   "version": "1.0.0",
   "type": "module",
   "description": "A quick quality-of-life content ingestion pipeline.",
