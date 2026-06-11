@@ -7,4 +7,4 @@ You find a great technical lecture on YouTube, an insightful essay on a blog, an
 
 # The Fix
 
-A lightweight local automation (using yt-dlp, javscript, and a simple webhook) that acts as a universal ingestion pipeline.
+A lightweight local automation (using yt-dlp, javscript, and a simple webhook) that acts as a universal ingestion pipeline with a dashboard/interface running directly on your machine.
