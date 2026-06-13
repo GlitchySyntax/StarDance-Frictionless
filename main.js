@@ -34,3 +34,25 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
     console.log(`Pipeline Dashboard live at http://localhost:${PORT}`);
 });
+
+
+function routeUrl(url) {
+    if (!url || typeof url !== 'string') return;
+    const sanitizedUrl = url.trim();
+
+    if (sanitizedUrl.includes('youtube.com') || sanitizedUrl.includes('youtu.be')) {
+        //basic check if the link is from youtube or not since yt-dlp only accepts youtube links
+        console.log(`[Video] Handing off to yt-dlp: ${sanitizedUrl}`);
+        //if the check succeeds then hand it off to the yt-dlp API/service to download and manage the rest
+        exec(`yt-dlp -P "${WATCH_LATER_DIR}" "${sanitizedUrl}"`, (err) => {
+            //basic error handeling
+            if (err) console.error(`[Video Error]: ${err.message}`);
+            else console.log(`[Video Success] Download complete.`);
+        });
+    } else {
+        //if given link is a article or something simular its added to a read list file for later
+        console.log(`[Article] Logging to markdown: ${sanitizedUrl}`);
+        const listPath = path.join(READ_LATER_DIR, 'reading_list.md');
+        fs.appendFileSync(listPath, `- [ ] ${sanitizedUrl}\n`, 'utf8');
+    }
+}
