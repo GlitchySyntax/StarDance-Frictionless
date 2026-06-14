@@ -19,13 +19,46 @@ console.log("Directories verified.");
 console.log(`Videos path: ${WATCH_LATER_DIR}`);
 console.log(`Articles path: ${READ_LATER_DIR}`);
 
-//BoilerPlate code for HTTP server for web interfact
+//Updated server to actual functional code instead of boilerplate
 
 const server = http.createServer((req, res) => {
     if (req.method === 'GET' && req.url === '/') {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('Pipeline Server is running.');
-    } else {
+        res.end('Pipeline API online.');
+    } 
+    // Handle income requests from the user
+    else if (req.method === 'POST' && req.url === '/submit') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const { url } = JSON.parse(body);
+                routeUrl(url);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ status: 'Processing started' }));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid data payload' }));
+            }
+        });
+    } 
+    // Read local files to transmit back to the user
+    else if (req.method === 'GET' && req.url === '/list') {
+        const videos = fs.readdirSync(WATCH_LATER_DIR);
+        let articles = [];
+        const listPath = path.join(READ_LATER_DIR, 'reading_list.md');
+        
+        if (fs.existsSync(listPath)) {
+            articles = fs.readFileSync(listPath, 'utf8')
+                .split('\n')
+                .filter(line => line.trim().startsWith('- [ ]'))
+                .map(line => line.replace('- [ ]', '').trim());
+        }
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ videos, articles }));
+    }
+    else {
         res.writeHead(404);
         res.end('Not Found');
     }
